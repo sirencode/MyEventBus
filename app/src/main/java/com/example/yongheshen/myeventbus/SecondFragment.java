@@ -24,6 +24,8 @@ public class SecondFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        EventBus.getDefault().post(new MessageEvent("Hello everyone!"));
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUserName("shen");
+        EventBus.getDefault().post(userEvent);
     }
 }
