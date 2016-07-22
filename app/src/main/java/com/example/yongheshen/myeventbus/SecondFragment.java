@@ -7,12 +7,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
+
 import org.greenrobot.eventbus.EventBus;
+
+import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by yonghe.shen on 16/7/19.
  */
 public class SecondFragment extends Fragment implements View.OnClickListener{
+
+    private Observable<UserEvent> rxbus;
+
+    @Override
+    public void onStart() {
+        rxbus = RxBus.get().register("shen",UserEvent.class);
+        rxbus.subscribe(new Action1<UserEvent>() {
+            @Override
+            public void call(UserEvent userEvent) {
+                Toast.makeText(getActivity(),"tag is shen from first rxbus"+userEvent.getUserName(),Toast.LENGTH_SHORT).show();
+            }
+        });
+        super.onStart();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,5 +47,11 @@ public class SecondFragment extends Fragment implements View.OnClickListener{
         UserEvent userEvent = new UserEvent();
         userEvent.setUserName("shen");
         EventBus.getDefault().post(userEvent);
+    }
+
+    @Override
+    public void onDestroy() {
+        RxBus.get().unregister("shen",rxbus);
+        super.onDestroy();
     }
 }

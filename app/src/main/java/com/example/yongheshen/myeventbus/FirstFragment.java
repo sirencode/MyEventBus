@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
  */
 public class FirstFragment extends Fragment implements View.OnClickListener{
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,13 +29,15 @@ public class FirstFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-
+        UserEvent userEvent = new UserEvent();
+        userEvent.setUserName("rxbus shen");
+        RxBus.get().post("shen", userEvent);
     }
 
     //定义处理接收方法，主线程
     @Subscribe
     public void onEventMainThread(UserEvent event) {
-        Toast.makeText(getActivity(), event.getUserName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "from second"+event.getUserName(), Toast.LENGTH_SHORT).show();
     }
 
 //    /**
