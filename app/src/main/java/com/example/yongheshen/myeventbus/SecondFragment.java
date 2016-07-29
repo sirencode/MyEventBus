@@ -23,11 +23,15 @@ public class SecondFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onStart() {
+        RxBus.get().register("remote",UserEvent.class);
         rxbus = RxBus.get().register("shen",UserEvent.class);
         rxbus.subscribe(new Action1<UserEvent>() {
             @Override
             public void call(UserEvent userEvent) {
-                Toast.makeText(getActivity(),"tag is shen from first rxbus"+userEvent.getUserName(),Toast.LENGTH_SHORT).show();
+                if (userEvent.getId() == 1000) {
+                    System.out.println("finish post rxbus::"+System.currentTimeMillis());
+                    Toast.makeText(getActivity(), "tag is shen from first rxbus" + userEvent.getUserName(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         super.onStart();
@@ -44,14 +48,24 @@ public class SecondFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        UserEvent userEvent = new UserEvent();
-        userEvent.setUserName("shen");
-        EventBus.getDefault().post(userEvent);
+        switch (view.getId()){
+            case R.id.second_send:
+                System.out.println("start post eventbus::"+System.currentTimeMillis());
+                UserEvent userEvent = new UserEvent();
+                for (int i =0;i<1001;i++){
+                    userEvent.setUserName("EventBus::second"+i);
+                    userEvent.setId(i);
+                    EventBus.getDefault().post(userEvent);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
-    public void onDestroy() {
+    public void onStop() {
         RxBus.get().unregister("shen",rxbus);
-        super.onDestroy();
+        super.onStop();
     }
 }

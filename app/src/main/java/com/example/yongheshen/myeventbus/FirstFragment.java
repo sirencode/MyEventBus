@@ -12,11 +12,14 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import rx.Observable;
+
 /**
  * Created by yonghe.shen on 16/7/18.
  */
 public class FirstFragment extends Fragment implements View.OnClickListener{
 
+    private Observable<UserEvent> rxbus;
 
     @Nullable
     @Override
@@ -29,15 +32,22 @@ public class FirstFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        System.out.println("start post rxbus::"+System.currentTimeMillis());
         UserEvent userEvent = new UserEvent();
-        userEvent.setUserName("rxbus shen");
-        RxBus.get().post("shen", userEvent);
+        for (int i = 0;i<1001;i++){
+            userEvent.setUserName("rxbus shen"+i);
+            userEvent.setId(i);
+            RxBus.get().post("shen", userEvent);
+        }
     }
 
     //定义处理接收方法，主线程
     @Subscribe
     public void onEventMainThread(UserEvent event) {
-        Toast.makeText(getActivity(), "from second"+event.getUserName(), Toast.LENGTH_SHORT).show();
+        if (event.getId() == 1000) {
+            System.out.println("finish post eventbus::"+System.currentTimeMillis());
+            Toast.makeText(getActivity(), "from second" + event.getUserName(), Toast.LENGTH_SHORT).show();
+        }
     }
 
 //    /**
@@ -68,17 +78,15 @@ public class FirstFragment extends Fragment implements View.OnClickListener{
 //        Toast.makeText(getActivity(), event.getUserName(), Toast.LENGTH_SHORT).show();
 //    }
 
-
-
     @Override
     public void onStart() {
-        super.onStart();
         EventBus.getDefault().register(this);
+        super.onStart();
     }
 
     @Override
     public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

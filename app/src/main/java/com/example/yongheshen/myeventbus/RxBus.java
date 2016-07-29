@@ -35,7 +35,7 @@ public class RxBus {
     public <T> Observable<T> register(@NonNull Object tag, @NonNull Class<T> clazz) {
         List<Subject> subjects = maps.get(tag);
         if (subjects == null) {
-            subjects = new ArrayList<>();
+            subjects = new ArrayList<Subject>();
             maps.put(tag, subjects);
         }
         Subject<T, T> subject = PublishSubject.<T>create();

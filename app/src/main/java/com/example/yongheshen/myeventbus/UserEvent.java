@@ -5,6 +5,15 @@ package com.example.yongheshen.myeventbus;
  */
 public class UserEvent {
     private String userName;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public UserEvent() {
     }
